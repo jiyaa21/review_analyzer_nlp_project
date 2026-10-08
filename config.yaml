@@ -1,0 +1,25 @@
+# ---------- LLM settings ----------
+llm:
+  provider: groq                     # Groq exposes an OpenAI-compatible REST API (free tier available)
+  api_url: https://api.groq.com/openai/v1/chat/completions
+  model: openai/gpt-oss-20b       # change here if Groq retires the model
+  api_key_env: GROQ_API_KEY          # name of the environment variable holding the key
+  temperature: 0.0                   # 0 = deterministic output, best for classification
+  max_tokens: 1500
+  json_mode: true                    # ask the API to return valid JSON only
+  timeout: 30                        # seconds per request
+  max_retries: 3                     # retries on rate-limit / server errors
+  retry_delay: 2                     # base seconds, doubles on every retry
+  request_delay: 0.3                 # pause between calls to respect free-tier limits
+
+# ---------- File paths ----------
+paths:
+  prompt_file: prompts/review_prompts.yaml
+  input_csv: data/reviews.csv
+  output_dir: outputs
+  cache_file: outputs/cache.json
+
+# ---------- Classical NLP preprocessing ----------
+preprocessing:
+  min_token_length: 3
+  top_keywords: 5                    # keywords extracted per review and for the whole corpus

@@ -1,0 +1,50 @@
+# All prompts used by the project live here. Placeholders: {review}, {stats}
+# They are filled with str.replace(), so JSON braces inside prompts are safe.
+
+system_prompt: |
+  You are an expert NLP analyst specialising in customer-review mining.
+  You always answer with a single valid JSON object and nothing else:
+  no markdown, no code fences, no explanations outside the JSON.
+
+analysis_prompt: |
+  Analyse the customer review below.
+
+  Tasks:
+  1. sentiment   : overall sentiment, exactly one of "positive", "negative", "neutral".
+                   Use "neutral" for mixed or purely factual reviews.
+  2. confidence  : your confidence as a number between 0 and 1.
+  3. aspects     : product/service aspects explicitly mentioned (e.g. battery, price,
+                   delivery, staff). For each give its own sentiment.
+                   Return an empty list if no aspect is mentioned.
+  4. summary     : one short sentence (max 15 words) summarising the review.
+
+  Rules:
+  - Handle negation correctly ("not good" is negative).
+  - Detect sarcasm ("great, it broke in a day" is negative).
+  - Use only information present in the review; do not invent aspects.
+  - Keep aspect names short, lowercase, 1-2 words.
+
+  Output format (strict JSON):
+  {"sentiment": "positive|negative|neutral",
+   "confidence": 0.0,
+   "aspects": [{"aspect": "battery", "sentiment": "positive|negative|neutral"}],
+   "summary": "..."}
+
+  Example
+  Review: """Camera is superb but the battery dies by evening."""
+  Output: {"sentiment": "neutral", "confidence": 0.8, "aspects": [{"aspect": "camera", "sentiment": "positive"}, {"aspect": "battery", "sentiment": "negative"}], "summary": "Excellent camera but poor battery life."}
+
+  Review: """{review}"""
+  Output:
+
+report_prompt: |
+  You are given statistics computed from a batch of customer reviews.
+  Write a short business report (max 90 words) in plain English with:
+  - the overall customer mood,
+  - the top 2 things customers like,
+  - the top 2 things customers complain about,
+  - one concrete recommendation.
+  Base your answer ONLY on the statistics. Respond with plain text (no JSON).
+
+  Statistics:
+  {stats}
